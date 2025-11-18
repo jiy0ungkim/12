@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 {
     int cnt; // for testing
     int pos; // for testing (player position)
-    
+    int coinResult;
     srand((unsigned)time(NULL));
     
     //opening
@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
     
     do{
         int die_result;
-        int coinResult;
+
         
         //2-1. Print status
         board_printBoardStatus();
