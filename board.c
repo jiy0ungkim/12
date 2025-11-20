@@ -7,10 +7,6 @@ int board_getSharkPosition(void);
 int board_stepShark(void);
 #endif
 
-#define N_BOARD             20
-#define BOARDSTATUS_OK      1
-#define BOARDSTATUS_NOK     0
-
 #define N_COINPOS           12
 #define MAX_COIN            4
 

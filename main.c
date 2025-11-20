@@ -4,6 +4,66 @@
 #include "board.h"
 
 #define MAX_DIE     6
+#define MAXLENGTH   30 
+
+#define N_PLAYER            3
+#define PLAYERSTATUS_LIVE   0
+#define PLAYERSTATUS_DIE    1
+#define PLAYERSTATUS_END    2
+
+char player_name[N_PLAYER][MAXLENGTH];
+int player_position[N_PLAYER];
+int player_coin[N_PLAYER];
+int player_status[N_PLAYER];
+char player_statusString[3][MAXLENGTH] = {"LIVE", "DIE", "END"};
+
+void initPlayer(void)
+{
+     int i;
+     for (i=0; i<N_PLAYER; i++)
+     {
+         printf("Player %i's name: ", i);
+         scanf("%s", player_name[i]); 
+         player_position[i] = 0;
+         player_coin[i] = 0;
+         player_status[i] = PLAYERSTATUS_LIVE;
+         fflush(stdin);
+     }
+}
+
+void printPlayerPosition(int player)
+{
+     int i;
+     for (i=0; i<N_BOARD; i++)
+     {
+         printf("|");
+         if (i == player_position[player])
+            printf("%c", player_name[player][0]);
+         else
+         {
+             if (board_getBoardStatus(i) == BOARDSTATUS_OK)
+                printf(" "); 
+             else
+                printf("X");
+         
+         }
+     }
+     printf("|\n");
+}
+
+void printPlayerStatus(void)
+{
+     int i;
+     for (i=0; i<N_PLAYER; i++)
+     {
+         printf("%s : pos %i, coin %i, status %s\n", 
+                    player_name[i], 
+                    player_position[i],
+                    player_coin[i], 
+                    player_statusString[player_status[i]]);
+         printPlayerPosition(i);
+     }
+}
 
 int rolldie(void)
 {
@@ -13,7 +73,8 @@ int rolldie(void)
 int main(int argc, char *argv[])
 {
     int cnt; // for testing
-    int pos; // for testing (player position)
+    int turn; 
+    int dum;
     int coinResult = 0;
     srand((unsigned)time(NULL));
     
@@ -21,41 +82,51 @@ int main(int argc, char *argv[])
     printf("==================================================\n");
     printf("                 SHARK GAME START                 \n");
     printf("==================================================\n");
-    printf("\n");
     
     //step 1. Initialization (player name setting + variables)
     board_initBoard();
+    initPlayer();//Player init
     
     //step 2. Turn play (do-while)
     cnt = 0;
-    pos = 0;
-    
+    turn = 0;
     do{
         int die_result;
 
-        
         //2-1. Print status
         board_printBoardStatus();
+        printPlayerStatus();// print player_status
         
-        //2-2. Roll die
+        //2-2. Roll die (player turn)
+        printf("%s turn!!", player_name[turn]);
+        printf("Press any key to roll a die!\n");
+        scanf("%d", &dum);
+        fflush(stdin);
         die_result = rolldie();
         
-        //2-3. Move (print result)
-        pos += die_result;
+        //2-3. Move (print result) (player turn)
+        player_position[turn] += die_result; 
+        if (player_position[turn] >= (N_BOARD - 1))
+        {
+            player_position[turn] = N_BOARD-1;
+            player_status[turn] = PLAYERSTATUS_END;
+        }
         
-        printf("Position: %i (Die: %i)\n", pos, die_result);
+        printf("Die result : %i, %s moved to %i\n", 
+                    die_result, player_name[turn], player_position[turn]);
         
-        coinResult += board_getBoardCoin(pos);
-        
-        printf("Coin: %i\n", coinResult);
+
+        //coinResult += board_getBoardCoin(player_position[turn]);
+        player_coin[turn] += board_getBoardCoin(player_position[turn]);
+        //printf("Coin: %i\n", coinResult);
+
         //2-4. Change turn & Move shark
         
         cnt++;
-        printf("\n");
-    } while(cnt<5);
+        turn = (turn + 1)%N_PLAYER;
+        printf("\n\n");
+    } while(cnt<N_PLAYER*5); //game end condition
     //step 3. Game end (print winner)
-    
-    
     
     
     
