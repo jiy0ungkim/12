@@ -25,11 +25,43 @@ int gameEnd(void)
     for (i=0; i<N_PLAYER; i++)
     {   
         if (player_status[i] == PLAYERSTATUS_LIVE)
+        {
            flag_end = 0;
+           break;
+        }
     }
     return flag_end;           
 }
 
+int getAlivePlayer(void)
+{
+    int i;
+    int cnt = 0;
+    for (i=0; i<N_PLAYER; i++)
+    {
+        if (player_status[i] == PLAYERSTATUS_END)
+           cnt++;
+    }
+    return cnt;
+}
+
+int getWinner(void)
+{
+    int i;
+    int winner = 0;
+    int max_coin = -1;
+    
+    for (i=0; i<N_PLAYER; i++)
+    {
+        if (player_coin[i] > max_coin)
+        {
+           max_coin = player_coin[i];
+           winner = i;
+        }
+    }
+    return winner;
+}
+        
 void checkDie(void)
 {
      int i;
@@ -169,11 +201,11 @@ int main(int argc, char *argv[])
         printf("\n\n");
     } while(gameEnd() == 0); //game end condition
     //step 3. Game end (print winner)
-    
-    
-    
+    printf("Number of alive players: %i\n", getAlivePlayer());
+    printf("The winner: %s\n", player_name[getWinner()]);
+
     // ending
-    printf("\n\n\n\n\n\n\n");
+    printf("\n\n\n\n\n");
     printf("==================================================\n");
     printf("                  SHARK GAME END                  \n");
     printf("==================================================\n");
