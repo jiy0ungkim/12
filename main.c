@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 {
     int cnt; // for testing
     int pos; // for testing (player position)
-    int coinResult;
+    int coinResult = 0;
     srand((unsigned)time(NULL));
     
     //opening
