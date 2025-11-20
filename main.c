@@ -17,6 +17,7 @@ int player_coin[N_PLAYER];
 int player_status[N_PLAYER];
 char player_statusString[3][MAXLENGTH] = {"LIVE", "DIE", "END"};
 
+
 void initPlayer(void)
 {
      int i;
@@ -75,7 +76,6 @@ int main(int argc, char *argv[])
     int cnt; // for testing
     int turn; 
     int dum;
-    int coinResult = 0;
     srand((unsigned)time(NULL));
     
     //opening
@@ -92,13 +92,19 @@ int main(int argc, char *argv[])
     turn = 0;
     do{
         int die_result;
-
+        
+        if (player_status[turn] != PLAYERSTATUS_LIVE)
+        {  
+           turn = (turn + 1) % N_PLAYER;   
+           continue;
+        }  
+        
         //2-1. Print status
         board_printBoardStatus();
         printPlayerStatus();// print player_status
         
         //2-2. Roll die (player turn)
-        printf("%s turn!!", player_name[turn]);
+        printf("%s turn!! ", player_name[turn]);
         printf("Press any key to roll a die!\n");
         scanf("%d", &dum);
         fflush(stdin);
@@ -115,10 +121,8 @@ int main(int argc, char *argv[])
         printf("Die result : %i, %s moved to %i\n", 
                     die_result, player_name[turn], player_position[turn]);
         
-
-        //coinResult += board_getBoardCoin(player_position[turn]);
         player_coin[turn] += board_getBoardCoin(player_position[turn]);
-        //printf("Coin: %i\n", coinResult);
+        printf("Lucky! %s got %i coins", player_name[turn], player_coin[turn]);
 
         //2-4. Change turn & Move shark
         
